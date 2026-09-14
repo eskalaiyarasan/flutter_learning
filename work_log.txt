@@ -1,0 +1,19 @@
+flutter create birdle --empty
+cd birdle
+flutter run -d chrome
+################################################
+this doesn't work Hence Flowing changes are done 
+/---------------------------------------
+flutter devices
+flutter run -d chrome   
+---------------------------------------/
+This show only one device that is linux But chromium browser is installed.
+/------------------------------------
+flatpak run org.chromium.Chromium
+-------------------------------------/
+so, made changes
+/---------------------------------
+mkdir -p "$HOME/.local/bin" && ls -ld "$HOME/.local/bin" && printf '%s\n' "$PATH"
+chmod +x "$HOME/.local/bin/google-chrome" && cd $flutter_learning/birdle && flutter devices
+cd $flutter_learning/birdle && timeout 20s flutter run -d chrome
+---------------------------------/
