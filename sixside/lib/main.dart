@@ -12,17 +12,73 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(body: Center(
-        child: HexagonWidget.flat(
-          width: 200,
-          color: Colors.limeAccent,
-          child: Center(
-            child: Text(
-              'Hexagon',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                sixsideWidget(1.0),
+              //SizedBox(height: 20),
+              QueensideWidget(50.3),              
+              sixsideWidget(80.7),],),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                sixsideWidget(2.0),
+              //SizedBox(height: 20),
+              QueensideWidget(30.3),              
+              sixsideWidget(120.7),],)
+              
+            ],
           ),
         ),
-      )),
+      ),
     );
+  }
+}
+
+class sixsideWidget extends StatelessWidget {
+  sixsideWidget(this.number,{super.key});
+
+  final double number ;
+  @override
+  Widget build(BuildContext context) {
+    return HexagonWidget.pointy(
+          width: 100,
+          //cornerRadius: 40.0,
+          color: Colors.amber,
+          child: Center(
+                child: Text(
+                  number.toString(),
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+        );
+  }
+}
+class QueensideWidget extends StatelessWidget {
+  QueensideWidget(this.number,{super.key});
+
+  final double number ;
+  @override
+  Widget build(BuildContext context) {
+    return HexagonWidget.pointy(
+          width: 100,
+          //cornerRadius: 40.0,
+          color: Colors.grey,
+          child: Center(
+            child: HexagonWidget.pointy(
+              width: 90,
+              color: Colors.amber,
+              child: Center(
+                child: Text(
+                  number.toString(),
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+          ),
+        );
   }
 }
