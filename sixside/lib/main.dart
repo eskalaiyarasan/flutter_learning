@@ -82,20 +82,38 @@ class _coreActionWidgetState extends State<coreActionWidget> {
     return HexagonWidget.pointy(
           width: width,
           //cornerRadius: 40.0,
-          color: Colors.amber,
-          child: Center(
-                child: TextButton(
-                  child: Text(
-                    number.toString(),
-                    style: TextStyle(fontSize: 20),
+          color: Colors.limeAccent,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+                children:[ 
+                  Container(
+                    //width: 30,
+                    height: 30,
+                    child: TextButton(
+                      child: Text(
+                        number.toString(),
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          number = number + 1;
+                        });
+                        print(number);
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      number = number + 1;
-                    });
-                    print(number);
-                  },
-                ),
+                  for (int i = 0; i < 10; i++)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for(int j=0;j<10;j++)
+                      Container(
+                        width: 5,height: 5,
+                        color: number >= i*10+j ? Colors.amber : Colors.limeAccent,
+                      ),
+                    ],
+                  ),
+                ]
               ),
         );
   }
