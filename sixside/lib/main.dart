@@ -41,26 +41,10 @@ class MainApp extends StatelessWidget {
 class sixsideWidget extends StatelessWidget {
   sixsideWidget(this.number,{super.key});
 
-  double number ;
+  final double number ;
   @override
   Widget build(BuildContext context) {
-    return HexagonWidget.pointy(
-          width: 100,
-          //cornerRadius: 40.0,
-          color: Colors.amber,
-          child: Center(
-                child: TextButton(
-                  child: Text(
-                    number.toString(),
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    //number = number + 1;
-                    print(number);
-                  },
-                ),
-              ),
-        );
+    return coreActionWidget(number,100);
   }
 }
 class QueensideWidget extends StatelessWidget {
@@ -74,23 +58,45 @@ class QueensideWidget extends StatelessWidget {
           //cornerRadius: 40.0,
           color: Colors.grey,
           child: Center(
-            child: HexagonWidget.pointy(
-              width: 90,
-              color: Colors.amber,
-              child: Center(
+            child: coreActionWidget(number,90),
+          ),
+        );
+  }
+}
+
+class coreActionWidget extends StatefulWidget {
+  coreActionWidget(this.number,this.width,{super.key});
+
+  double number;
+  double width;
+  @override
+  State<coreActionWidget> createState() => _coreActionWidgetState(number,width);
+}
+
+class _coreActionWidgetState extends State<coreActionWidget> {
+  _coreActionWidgetState(this.number,this.width);
+  double number;
+  double width;
+  @override
+  Widget build(BuildContext context) {
+    return HexagonWidget.pointy(
+          width: width,
+          //cornerRadius: 40.0,
+          color: Colors.amber,
+          child: Center(
                 child: TextButton(
-                  onPressed: (){
-                    print('QueensideWidget pressed');
+                  child: Text(
+                    number.toString(),
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      number = number + 1;
+                    });
                     print(number);
-                  }, 
-                  child:  Text(
-                  number.toString(),
-                  style: TextStyle(fontSize: 20),
+                  },
                 ),
               ),
-              ),
-            ),
-          ),
         );
   }
 }
