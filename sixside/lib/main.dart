@@ -41,7 +41,7 @@ class MainApp extends StatelessWidget {
 class sixsideWidget extends StatelessWidget {
   sixsideWidget(this.number,{super.key});
 
-  final double number ;
+  double number ;
   @override
   Widget build(BuildContext context) {
     return HexagonWidget.pointy(
@@ -49,9 +49,15 @@ class sixsideWidget extends StatelessWidget {
           //cornerRadius: 40.0,
           color: Colors.amber,
           child: Center(
-                child: Text(
-                  number.toString(),
-                  style: TextStyle(fontSize: 20),
+                child: TextButton(
+                  child: Text(
+                    number.toString(),
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () {
+                    //number = number + 1;
+                    print(number);
+                  },
                 ),
               ),
         );
@@ -72,10 +78,16 @@ class QueensideWidget extends StatelessWidget {
               width: 90,
               color: Colors.amber,
               child: Center(
-                child: Text(
+                child: TextButton(
+                  onPressed: (){
+                    print('QueensideWidget pressed');
+                    print(number);
+                  }, 
+                  child:  Text(
                   number.toString(),
                   style: TextStyle(fontSize: 20),
                 ),
+              ),
               ),
             ),
           ),
