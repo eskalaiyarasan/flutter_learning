@@ -7,17 +7,23 @@ class BaseObject{
   static void registerWidget( CoreActionWidgetState widget) {
     registry[widget.getName() ] = widget;
   }
-  static void action(String name){
+  static Future<void> action(String name) async {
     if(registry.containsKey(name)){
       CoreActionWidgetState state = registry[name] as CoreActionWidgetState;
       state.setNumber(0);
     }
-    registry.forEach((key, widget) {
-      if (key != name) {
-        final state = widget;
+    await Future.delayed(Duration(milliseconds: 500));
+    for (final entry in registry.entries) {
+      if (entry.key != name) {
+        final state = entry.value;
+
         state.setNumber(state.getNumber() + 1);
+
+        await Future.delayed(
+          const Duration(milliseconds: 200),
+        );
       }
-    });
+    }
     
   }
 
