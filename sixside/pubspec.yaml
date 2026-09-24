@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   hexagon: ^0.2.0
+  uuid: ^4.6.0
 
 dev_dependencies:
   flutter_test:
