@@ -68,43 +68,54 @@ class CoreActionWidgetState extends State<CoreActionWidget> {
       number = newNumber;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return HexagonWidget.pointy(
-          width: width,
-          //cornerRadius: 40.0,
-          color: Colors.limeAccent,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-                children:[ 
-                  Container(
-                    //width: 30,
-                    height: 30,
-                    child: TextButton(
-                      child: Text(
-                        number.toString(),
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      onPressed: () {
-                        BaseObject.action(name);
-                      },
-                    ),
-                  ),
-                  for (int i = 0; i < 10; i++)
+      width: width,
+      color: Colors.limeAccent,
+      child: Stack(
+        children: [
+          // Background visual layer containing text layout and the dot grid matrix
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Display the number strictly as text visual (no internal button constraints)
+                Text(
+                  number.toString(),
+                  style: const TextStyle(fontSize: 12, color: Colors.blue),
+                ),
+                const SizedBox(height: 4), // Small spacing before the grid
+                // The remaining for-loop grid layout
+                for (int i = 0; i < 10; i++)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      for(int j=0;j<10;j++)
-                      Container(
-                        width: 5,height: 5,
-                        color: number >= i*10+j ? Colors.amber : Colors.limeAccent,
-                      ),
+                      for (int j = 0; j < 10; j++)
+                        Container(
+                          width: 5,
+                          height: 5,
+                          color: number > i * 10 + j ? Colors.amber : Colors.limeAccent,
+                        ),
                     ],
                   ),
-                ]
+              ],
+            ),
+          ),
+          // Foreground transparent interactive layer covering the entire Hexagon shape
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  BaseObject.action(name);
+                },
               ),
-        );
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -137,5 +148,41 @@ class QueensideWidget extends StatelessWidget {
           ),
           )
         );
+  }
+}
+
+
+
+class MainApp extends StatelessWidget {
+  MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(body: Center(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+	    crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                SixsideWidget(1.0),
+              //SizedBox(height: 20),
+              QueensideWidget(50.3),              
+              SixsideWidget(80.7),],),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                SixsideWidget(2.0),
+              //SizedBox(height: 20),
+              QueensideWidget(30.3),              
+              SixsideWidget(120.7),],)
+              
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
