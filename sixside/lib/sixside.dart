@@ -70,7 +70,7 @@ class CoreActionWidgetState extends State<CoreActionWidget> {
   }
   @override
   Widget build(BuildContext context) {
-    return HexagonWidget.pointy(
+    return HexagonWidget.flat(
       width: width,
       color: Colors.limeAccent,
       child: Stack(
@@ -137,7 +137,7 @@ class QueensideWidget extends StatelessWidget {
   final double number ;
   @override
   Widget build(BuildContext context) {
-    return HexagonWidget.pointy(
+    return HexagonWidget.flat(
           width: 100,
           //cornerRadius: 40.0,
           color: Colors.grey,
