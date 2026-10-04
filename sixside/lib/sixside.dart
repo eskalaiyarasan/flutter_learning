@@ -182,6 +182,12 @@ class MainApp extends StatelessWidget {
             ],
           ),
         ),
+	floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pop(context); // Pops the current route off the stack
+          },
+          child: const Icon(Icons.arrow_back),
+        ),
       ),
     );
   }
