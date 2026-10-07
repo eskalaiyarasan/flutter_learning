@@ -5,27 +5,66 @@ import 'package:firebase_database/firebase_database.dart';
 class BaseObject{
   static int _counter = 0;
   static final Map<String, CoreActionWidgetState> registry = {};
+  static bool _isListeningInitialized = false;
+
   static void registerWidget( CoreActionWidgetState widget) {
     registry[widget.getName() ] = widget;
+
+    // Initialize the Firebase Realtime Database listener once widgets register
+    if (!_isListeningInitialized) {
+      _initDatabaseListener();
+      _isListeningInitialized = true;
+    }
   }
-  static Future<void> action(String name) async {
+  // Listen to remote changes from Firebase Realtime Database
+  static void _initDatabaseListener() {
+    DatabaseReference ref = FirebaseDatabase.instance.ref().child('actions');
+    
+    // Listen for new children added to the database
+    ref.onChildAdded.listen((DatabaseEvent event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        final String? remoteName = data['name']?.toString();
+        final int? remoteSequence = data['Sequence'] as int?;
+
+        // Check if this update came from an external source or another device 
+        // by comparing or ensuring we don't loop infinitely. 
+        // If the sequence is greater than our current local counter, sync it up and trigger action locally.
+        if (remoteSequence != null && remoteSequence > _counter) {
+          _counter = remoteSequence; // sync local counter
+          
+          if (remoteName != null && registry.containsKey(remoteName)) {
+            // Pass `updateDatabase: false` so it performs the action 
+            // WITHOUT triggering another write back to Firebase.
+            action(remoteName, updateDatabase: false);
+          }
+        }
+      }
+    });
+  }
+
+  static Future<void> action(String name,{bool updateDatabase = true} ) async {
     if(registry.containsKey(name)){
-      _counter ++;
       CoreActionWidgetState state = registry[name] as CoreActionWidgetState;
-      if (state != null) {
+      if (updateDatabase) {
+      	_counter ++;
+      
+        if (state != null) {
       	try {
         	DatabaseReference ref = FirebaseDatabase.instance.ref().child('actions').push();
         	await ref.set({
           		"name": name,
           		"value": state.getNumber(),
           		"Sequence": _counter, // 3. Follows the required JSON format
+			"Timestamp":ServerValue.timestamp,
         	});
       	} catch (e) {
         	debugPrint("Error updating Firebase: $e");
       	}
-      }
+        }
+     }
       state.setNumber(0);
-    }
+    
     await Future.delayed(Duration(milliseconds: 500));
     for (final entry in registry.entries) {
       if (entry.key != name) {
@@ -38,6 +77,7 @@ class BaseObject{
         );
       }
     }
+  }
     
   }
 
@@ -122,7 +162,7 @@ class CoreActionWidgetState extends State<CoreActionWidget> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  BaseObject.action(name);
+                  BaseObject.action(name, updateDatabase: true);
                 },
               ),
             ),
