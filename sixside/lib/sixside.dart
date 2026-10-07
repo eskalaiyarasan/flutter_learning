@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:firebase_database/firebase_database.dart';
 class BaseObject{
+  static int _counter = 0;
   static final Map<String, CoreActionWidgetState> registry = {};
   static void registerWidget( CoreActionWidgetState widget) {
     registry[widget.getName() ] = widget;
   }
   static Future<void> action(String name) async {
     if(registry.containsKey(name)){
+      _counter ++;
       CoreActionWidgetState state = registry[name] as CoreActionWidgetState;
+      if (state != null) {
+      	try {
+        	DatabaseReference ref = FirebaseDatabase.instance.ref().child('actions').push();
+        	await ref.set({
+          		"name": name,
+          		"value": state.getNumber(),
+          		"Sequence": _counter, // 3. Follows the required JSON format
+        	});
+      	} catch (e) {
+        	debugPrint("Error updating Firebase: $e");
+      	}
+      }
       state.setNumber(0);
     }
     await Future.delayed(Duration(milliseconds: 500));
