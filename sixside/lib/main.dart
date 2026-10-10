@@ -9,8 +9,16 @@ final String clientId = const Uuid().v4();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  try{
+    await Firebase.initializeApp(
+	options: DefaultFirebaseOptions.currentPlatform,
+	);
+  }catch (e){
+    if (e.toString().contains('duplicate-app')) {
+      debugPrint('Firebase already initialized.');
+    } else {
+      rethrow; // Rethrow if it's a completely different error
+    }
   }
   runApp( MyApp(clientId: clientId));
 }

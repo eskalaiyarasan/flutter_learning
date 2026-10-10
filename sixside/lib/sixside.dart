@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hexagon/hexagon.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
+
+
+final String myref_name = base64.encode(utf8.encode(const Uuid().v4()) );
 class BaseObject{
   static int _counter = 0;
   static final Map<String, CoreActionWidgetState> registry = {};
   static bool _isListeningInitialized = false;
-
   static void registerWidget( CoreActionWidgetState widget) {
     registry[widget.getName() ] = widget;
 
@@ -18,7 +21,7 @@ class BaseObject{
   }
   // Listen to remote changes from Firebase Realtime Database
   static void _initDatabaseListener() {
-    DatabaseReference ref = FirebaseDatabase.instance.ref().child('actions');
+    DatabaseReference ref = FirebaseDatabase.instance.ref().child(myref_name);
     
     // Listen for new children added to the database
     ref.onChildAdded.listen((DatabaseEvent event) {
@@ -51,7 +54,7 @@ class BaseObject{
       
         if (state != null) {
       	try {
-        	DatabaseReference ref = FirebaseDatabase.instance.ref().child('actions').push();
+        	DatabaseReference ref = FirebaseDatabase.instance.ref().child(myref_name).push();
         	await ref.set({
           		"name": name,
           		"value": state.getNumber(),
@@ -99,10 +102,12 @@ class CoreActionWidgetState extends State<CoreActionWidget> {
   CoreActionWidgetState(this.number,this.width);
   double number;
   double width;
-  final String name = const Uuid().v4();
+  static int _index = 0;
+  String name =' ';
   @override
   void initState() {
     super.initState();
+    name = 'A${_index ++}';
     BaseObject.registerWidget(this);
   }
 
